@@ -26,7 +26,14 @@ public class CollectableItems : MonoBehaviour
                 // เล่นเสียงเอฟเฟกต์
                 se.PlayCollectSoundEffect();
                 gameObject.SetActive(false);
-                op.ResetCoin(gameObject);
+                op.ResetObject(gameObject, "coin");
+            }
+            if (gameObject.CompareTag("double_jump"))
+            {
+                player.OnCollectingItem("double jump");
+                se.PlayCollectSoundEffect();
+                gameObject.SetActive(false);
+                op.ResetObject(gameObject, "powerUp");
             }
         }
     }

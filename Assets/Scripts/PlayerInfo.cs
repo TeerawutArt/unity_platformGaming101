@@ -4,28 +4,71 @@ using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
-    public double health = 3;
-    public double point = 0;
+
+    private HealthBar hb;
+    private ScoreBar sb;
+    private UIController uic;
+    public float health;
+    public float maxHp = 3;
+
+    public float point = 0;
+    public bool doubleJump = false;
     // Start is called before the first frame update
     void Start()
     {
+        hb = HealthBar.SharedInstance;
+        sb = ScoreBar.SharedInstance;
+        uic = UIController.SharedInstance;
+        health = maxHp;
 
     }
-    public double UpdateHealth(double _health, string _event)
+    public float UpdateHealth(float _health, string _event)
     {
 
         return health;
     }
-    public double UpdatePoint(double _point)
+    public float UpdatePoint(float _point)
     {
         point += _point;
-
+        sb.AddScore(point);
         return point;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            TakeDamage(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Heal(1);
+        }
 
+    }
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        hb.UpdateHealthBar(health, maxHp);
+
+
+    }
+    public void Heal(float healingAmount)
+    {
+        health += healingAmount;
+        if (health >= maxHp)
+        {
+            health = maxHp;
+        }
+        hb.UpdateHealthBar(health, maxHp);
+    }
+    public void DoubleJumpState(bool _state)
+    {
+        if (_state == true) doubleJump = true;
+
+        else if (_state == false) doubleJump = false;
+
+        uic.UpdatePowerUp(_state);
     }
 }

@@ -10,7 +10,7 @@ public class PlayerControl : MonoBehaviour
     private Animator anim;
     private PlayerInfo pInfo;
     public float speed = 1;
-    public float jump = 5;
+    public float jumpPower = 5;
     public JumpState jumpState = JumpState.Grounded;
     public bool controlEnabled = true;
     private Vector2 move = Vector2.zero;
@@ -33,9 +33,16 @@ public class PlayerControl : MonoBehaviour
 
             if (jumpState == JumpState.Grounded && Input.GetKeyDown(KeyCode.Space))
             {
-                rb.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
+                /*  rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);  หมายเหตุ ที่ไม่ใช้ addForce เพราะมันทำให้ พฤติกรรมการกระโดด 2 ครั้งดูแปลกๆ (ไม่เชื่อลองใช้ดู)*/
+                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
                 jumpState = JumpState.Jumping;
 
+            }
+            else if (pInfo.doubleJump && Input.GetKeyDown(KeyCode.Space))//ใช้ความกระโดด 2 ครั้ง
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+                jumpState = JumpState.Jumping;
+                pInfo.DoubleJumpState(false);
             }
         }
         else
@@ -76,6 +83,11 @@ public class PlayerControl : MonoBehaviour
         if (_item == "coin")
         {
             pInfo.UpdatePoint(1);
+        }
+        if (_item == "double jump")
+        {
+            pInfo.DoubleJumpState(true);
+
         }
     }
 }

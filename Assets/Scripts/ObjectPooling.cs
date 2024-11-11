@@ -1,69 +1,79 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class ObjectPooling : MonoBehaviour
 {
     public static ObjectPooling SharedInstance;
-    public List<GameObject> pooledObjects;
-    public GameObject objectToPool;
+    public Dictionary<string, List<GameObject>> pooledObjects;
+    public GameObject coinPrefab;
+    public GameObject powerUpPrefab;
     public GameObject collectableParent;
-    public int amountToPool;
+    public int coinAmountToPool = 10;
+    public int powerUpAmountToPool = 5;
     public bool isInitialized = false;
-    public SpawnCoin sc;
+    public SpawnObj sc;
+
     void Awake()
     {
         SharedInstance = this;
     }
-    // Start is called before the first frame update
+
     void Start()
     {
-        sc = GetComponent<SpawnCoin>();
-        pooledObjects = new List<GameObject>();
-        GameObject tmp;
-        for (int i = 0; i < amountToPool; i++)
+        sc = GetComponent<SpawnObj>();
+        pooledObjects = new Dictionary<string, List<GameObject>>();
+        InitializePool("coin", coinPrefab, coinAmountToPool);
+        InitializePool("powerUp", powerUpPrefab, powerUpAmountToPool);
+        isInitialized = true;
+    }
+
+    // Method to initialize pools for each object type
+    private void InitializePool(string key, GameObject prefab, int amount)
+    {
+        List<GameObject> objectPool = new List<GameObject>();
+        for (int i = 0; i < amount; i++)
         {
-            tmp = Instantiate(objectToPool, collectableParent.transform);
+            GameObject tmp = Instantiate(prefab, collectableParent.transform);
             tmp.SetActive(false);
-            pooledObjects.Add(tmp);
+            objectPool.Add(tmp);
         }
-        isInitialized = true;  // เพื่อบอกว่า pool พร้อมใช้งานแล้ว ก่อนจะไปเรียกใช้มัน
+        pooledObjects[key] = objectPool;
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public GameObject GetPooledObject(string key)
     {
-
-    }
-
-    public GameObject GetPooledObject()
-    {
-        if (pooledObjects == null || pooledObjects.Count == 0)
+        if (pooledObjects.ContainsKey(key))
         {
-            return null;
-        }
-        for (int i = 0; i < amountToPool; i++)
-        {
-            if (!pooledObjects[i].activeInHierarchy)
+            foreach (GameObject obj in pooledObjects[key])
             {
-                return pooledObjects[i];
+                if (!obj.activeInHierarchy)
+                {
+                    return obj;
+                }
             }
         }
         return null;
     }
-    public void ResetCoin(GameObject coin)
+
+    public void ResetObject(GameObject obj, string key)
     {
-        StartCoroutine(WaitAndReactivateCoin(coin));  // เรียกใช้ Coroutine เพื่อหน่วงเวลา
+        StartCoroutine(WaitAndReactivateObject(obj, key));
     }
 
-    // Coroutine สำหรับรอเวลา 3 วินาทีและทำให้เหรียญกลับมา
-    private IEnumerator WaitAndReactivateCoin(GameObject coin)
+    private IEnumerator WaitAndReactivateObject(GameObject obj, string key)
     {
-        yield return new WaitForSeconds(3);  // รอ 3 วินาที
-        sc.RandomSpawnCoin(coin);
-
+        yield return new WaitForSeconds(3);
+        if (key == "coin")
+        {
+            sc.RandomSpawnItem(obj);
+        }
+        else if (key == "powerUp")
+        {
+            // Implement custom logic for spawning power-ups
+            sc.RandomSpawnItem(obj);
+        }
     }
+
+
 }

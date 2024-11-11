@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Collectable
+  - coin
+  - double_jump
   layers:
   - Default
   - TransparentFX
