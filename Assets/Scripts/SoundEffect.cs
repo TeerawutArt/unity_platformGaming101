@@ -16,16 +16,19 @@ public class SoundEffect : MonoBehaviour
     private AudioSource bgSoundSource;
     public static SoundEffect ShareInstance;
 
-    void Start()
+    void Awake()
     {
         ShareInstance = this;
 
-        // แยก AudioSource สำหรับเล่นเสียงที่เล่นครั้งเดียวและเสียงลูป
+
+    }
+    void Start()
+    {        // แยก AudioSource สำหรับเล่นเสียงที่เล่นครั้งเดียวและเสียงลูป
         soundEffectSource = gameObject.AddComponent<AudioSource>();
         walkLoopSource = gameObject.AddComponent<AudioSource>();
         bgSoundSource = gameObject.AddComponent<AudioSource>();
-
         PlayBgMusic();
+
     }
     public void PlayBgMusic()
     {

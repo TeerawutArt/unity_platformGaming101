@@ -8,11 +8,11 @@ public class CollectableItems : MonoBehaviour
     private SoundEffect se;
     private ObjectPooling op;
     // Start is called before the first frame update
+
     void Start()
     {
         op = ObjectPooling.SharedInstance;
         se = SoundEffect.ShareInstance;
-
     }
     void OnTriggerEnter2D(Collider2D other)
     {

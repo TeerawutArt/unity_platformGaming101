@@ -4,20 +4,21 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     private Animator anim;
-    private SpriteRenderer spriteRenderer; // ใช้สำหรับการกระพริบ
+    private SpriteRenderer sr; // ใช้สำหรับการกระพริบ
     public string[] idleDirections = { "Idle_right", "Idle_left" };
     public string[] runDirections = { "Run_right", "Run_left" };
     public string[] jumpDirections = { "Jump_right", "Jump_left" };
     public string[] fallingDirections = { "Jump_Fall_right", "Jump_Fall_left" };
     public string[] damagedDirections = { "Damaged_right", "Damaged_left" };
-    int lastDirection;
+    public int lastDirection = 0;
     bool damaged = false;
 
     // Start is called before the first frame update
+
     void Start()
     {
+        sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // รับการอ้างอิง SpriteRenderer
     }
 
     // ฟังก์ชันที่ใช้ในการตั้งค่าทิศทางของผู้เล่น
@@ -83,23 +84,22 @@ public class PlayerAnimation : MonoBehaviour
     // Coroutine สำหรับการกระพริบ
     private IEnumerator HandleDamageEffect()
     {
-        float blinkDuration = 2f; // ระยะเวลาการกระพริบ
+        float blinkDuration = 1f; // ระยะเวลาการกระพริบ
         float blinkInterval = 0.1f; // เวลาระหว่างการกระพริบแต่ละครั้ง
-
         float timeElapsed = 0f;
         bool isVisible = true;
 
-        // กระพริบ sprite เป็นเวลา 2 วินาที
+        // กระพริบ sprite เป็นเวลา 1 วินาที
         while (timeElapsed < blinkDuration)
         {
-            spriteRenderer.enabled = isVisible; // สลับการแสดงของ sprite
+            sr.enabled = isVisible; // สลับการแสดงของ sprite
             isVisible = !isVisible; // เปลี่ยนสถานะการแสดงผล
             timeElapsed += blinkInterval;
             yield return new WaitForSeconds(blinkInterval);
         }
 
         // หลังจากกระพริบเสร็จแล้ว ให้แสดงผลตามปกติ
-        spriteRenderer.enabled = true;
+        sr.enabled = true;
         damaged = false;
 
         // กลับไปที่ท่าทาง Idle ในทิศทางล่าสุด

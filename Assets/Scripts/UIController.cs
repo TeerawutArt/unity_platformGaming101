@@ -10,7 +10,7 @@ public class UIController : MonoBehaviour
     public UnityEngine.UI.Image PowerUp;
     public static UIController SharedInstance;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         SharedInstance = this;
 

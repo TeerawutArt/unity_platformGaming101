@@ -8,6 +8,7 @@ public class PlayerControl : MonoBehaviour
     private PlayerInfo pInfo;
     public float speed = 1;
     public float jumpPower = 5;
+    public float knockBackPower = 3;
     public JumpState jumpState = JumpState.Grounded;
     public bool controlEnabled = true;
     private Vector2 move = Vector2.zero;
@@ -16,14 +17,17 @@ public class PlayerControl : MonoBehaviour
     private bool isWalking = false; // ตัวแปรเก็บสถานะการเดิน
     private float walkThreshold = 0.3f; // กำหนดค่า threshold สำหรับการเริ่มเล่นเสียงเดิน (ทดสอบแล้วมากกว่า 0.3กำลังดี)
     private Vector2 direction = Vector2.zero;
-
+    private PlayerAnimation pa; // Reference to PlayerAnimation
     // Start is called before the first frame update
+
     void Start()
     {
         se = SoundEffect.ShareInstance;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         pInfo = GetComponent<PlayerInfo>();
+        pa = GetComponentInChildren<PlayerAnimation>();
+
     }
 
     // Update is called once per frame
@@ -72,6 +76,32 @@ public class PlayerControl : MonoBehaviour
                 jumpState = JumpState.Jumping;
                 pInfo.DoubleJumpState(false);
             }
+
+
+            //check state ของตัวละคร
+            if (rb.velocity.y > 0.1f) // ตัวละครกำลังกระโดดขึ้น
+            {
+                jumpState = JumpState.Jumping;
+            }
+            else if (rb.velocity.y < -0.1f) // ตัวละครกำลังตกลง
+            {
+                if (jumpState != JumpState.Falling) // เริ่มบันทึกระยะการตก
+                {
+                    fallStartY = transform.position.y;
+                }
+                jumpState = JumpState.Falling;
+            }
+
+            if (rb.velocity.y == 0)
+            {
+                jumpState = JumpState.Grounded;
+            }
+
+            move.y = rb.velocity.y;
+            rb.velocity = new Vector2(move.x, move.y);
+
+            direction = new Vector2(move.x, move.y);
+            pa.SetDirection(direction, jumpState);
         }
         else
         {
@@ -82,30 +112,6 @@ public class PlayerControl : MonoBehaviour
                 isWalking = false;
             }
         }
-
-        if (rb.velocity.y > 0.1f) // ตัวละครกำลังกระโดดขึ้น
-        {
-            jumpState = JumpState.Jumping;
-        }
-        else if (rb.velocity.y < -0.1f) // ตัวละครกำลังตกลง
-        {
-            if (jumpState != JumpState.Falling) // เริ่มบันทึกระยะการตก
-            {
-                fallStartY = transform.position.y;
-            }
-            jumpState = JumpState.Falling;
-        }
-
-        if (rb.velocity.y == 0)
-        {
-            jumpState = JumpState.Grounded;
-        }
-
-        move.y = rb.velocity.y;
-        rb.velocity = new Vector2(move.x, move.y);
-
-        direction = new Vector2(move.x, move.y);
-        FindObjectOfType<PlayerAnimation>().SetDirection(direction, jumpState);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -136,24 +142,25 @@ public class PlayerControl : MonoBehaviour
     public void OnDamaged()
     {
         pInfo.TakeDamage(1);
-        // หยุดการบังคับ
         controlEnabled = false;
 
-        // ให้ตัวละครกระเด็นไปข้างหลัง
-        Vector2 knockback = new Vector2(100, 0); // ทิศทางข้างหลัง 1 หน่วย
-        rb.velocity = new Vector2(knockback.x * 20, rb.velocity.y); // ใช้ velocity เพื่อลากตัวละครถอยหลัง
+        // Determine knockback direction based on current facing direction
+        Debug.Log(direction);
+        float knockbackDirection = pa.lastDirection == 0 ? -1 : 1;
 
-        // เล่นอนิเมชั่นโดนโจมตี
-        FindObjectOfType<PlayerAnimation>().SetDamageDirection(direction);
+        // Apply knockback with the correct direction
+        Vector2 knockback = new Vector2(knockbackDirection * knockBackPower, rb.velocity.y);
+        rb.velocity = knockback;
 
-        // เรียก Coroutine ให้ตัวละครกระพริบและกลับมาบังคับได้
+        // Play damage animation and start the blinking effect
+        pa.SetDamageDirection(direction);
         StartCoroutine(HandleDamageEffect());
     }
 
     private IEnumerator HandleDamageEffect()
     {
         // รอให้กระพริบเสร็จสิ้น
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         // หลังจากกระพริบเสร็จแล้ว เปิดการควบคุมกลับ
         controlEnabled = true;

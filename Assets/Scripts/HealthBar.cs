@@ -8,7 +8,7 @@ public class HealthBar : MonoBehaviour
     public static HealthBar SharedInstance;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         SharedInstance = this;
 

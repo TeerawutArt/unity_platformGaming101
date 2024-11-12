@@ -14,13 +14,13 @@ public class PlayerInfo : MonoBehaviour
     public float point = 0;
     public bool doubleJump = false;
     // Start is called before the first frame update
+
     void Start()
     {
+        health = maxHp;
         hb = HealthBar.SharedInstance;
         sb = ScoreBar.SharedInstance;
         uic = UIController.SharedInstance;
-        health = maxHp;
-
     }
     public float UpdateHealth(float _health, string _event)
     {
