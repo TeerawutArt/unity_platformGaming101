@@ -37,14 +37,7 @@ public class PlayerInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            TakeDamage(1);
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Heal(1);
-        }
+
 
     }
     public void TakeDamage(float damage)

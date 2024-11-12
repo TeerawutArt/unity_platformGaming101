@@ -11,7 +11,7 @@ public class CollectableItems : MonoBehaviour
     void Start()
     {
         op = ObjectPooling.SharedInstance;
-        se = gameObject.GetComponentInParent<SoundEffect>();
+        se = SoundEffect.ShareInstance;
 
     }
     void OnTriggerEnter2D(Collider2D other)
@@ -20,18 +20,17 @@ public class CollectableItems : MonoBehaviour
 
         if (player != null)
         {
+            se.PlaySoundEffect("collectSound");
             if (gameObject.CompareTag("coin"))
             {
                 player.OnCollectingItem("coin");
                 // เล่นเสียงเอฟเฟกต์
-                se.PlayCollectSoundEffect();
                 gameObject.SetActive(false);
                 op.ResetObject(gameObject, "coin");
             }
             if (gameObject.CompareTag("double_jump"))
             {
                 player.OnCollectingItem("double jump");
-                se.PlayCollectSoundEffect();
                 gameObject.SetActive(false);
                 op.ResetObject(gameObject, "powerUp");
             }
