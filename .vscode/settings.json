@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "unity_platformGaming101.sln"
+    "dotnet.defaultSolution": "PlatformGame101.sln"
 }

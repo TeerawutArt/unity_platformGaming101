@@ -17,8 +17,8 @@ public class PlayerControl : MonoBehaviour
     private bool isWalking = false; // ตัวแปรเก็บสถานะการเดิน
     private float walkThreshold = 0.3f; // กำหนดค่า threshold สำหรับการเริ่มเล่นเสียงเดิน (ทดสอบแล้วมากกว่า 0.3กำลังดี)
     private Vector2 direction = Vector2.zero;
-    private PlayerAnimation pa; // Reference to PlayerAnimation
-    // Start is called before the first frame update
+    private PlayerAnimation pa;
+    private bool damaged = false;
 
     void Start()
     {
@@ -141,18 +141,13 @@ public class PlayerControl : MonoBehaviour
 
     public void OnDamaged()
     {
+        if (damaged) return;
         pInfo.TakeDamage(1);
+        damaged = true;
         controlEnabled = false;
-
-        // Determine knockback direction based on current facing direction
-        Debug.Log(direction);
         float knockbackDirection = pa.lastDirection == 0 ? -1 : 1;
-
-        // Apply knockback with the correct direction
         Vector2 knockback = new Vector2(knockbackDirection * knockBackPower, rb.velocity.y);
         rb.velocity = knockback;
-
-        // Play damage animation and start the blinking effect
         pa.SetDamageDirection(direction);
         StartCoroutine(HandleDamageEffect());
     }
@@ -161,8 +156,8 @@ public class PlayerControl : MonoBehaviour
     {
         // รอให้กระพริบเสร็จสิ้น
         yield return new WaitForSeconds(1f);
-
         // หลังจากกระพริบเสร็จแล้ว เปิดการควบคุมกลับ
         controlEnabled = true;
+        damaged = false;
     }
 }
