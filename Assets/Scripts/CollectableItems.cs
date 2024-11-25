@@ -21,13 +21,14 @@ public class CollectableItems : MonoBehaviour
         if (player != null)
         {
             se.PlaySoundEffect("collectSound");
+            //เหรียญ
             if (gameObject.CompareTag("coin"))
             {
                 player.OnCollectingItem("coin");
-                // เล่นเสียงเอฟเฟกต์
                 gameObject.SetActive(false);
                 op.ResetObject(gameObject, "coin");
             }
+            //power up double jump
             if (gameObject.CompareTag("double_jump"))
             {
                 player.OnCollectingItem("double jump");
