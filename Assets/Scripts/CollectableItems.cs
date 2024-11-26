@@ -7,6 +7,7 @@ public class CollectableItems : MonoBehaviour
 
     private SoundEffect se;
     private ObjectPooling op;
+
     // Start is called before the first frame update
 
     void Start()
@@ -26,14 +27,16 @@ public class CollectableItems : MonoBehaviour
             {
                 player.OnCollectingItem("coin");
                 gameObject.SetActive(false);
-                op.ResetObject(gameObject, "coin");
+
             }
             //power up double jump
             if (gameObject.CompareTag("double_jump"))
             {
+                ItemController doubleJump = gameObject.GetComponent<ItemController>();
                 player.OnCollectingItem("double jump");
                 gameObject.SetActive(false);
-                op.ResetObject(gameObject, "powerUp");
+                op.ResetObject(gameObject,"powerUp",doubleJump.index);
+
             }
         }
     }

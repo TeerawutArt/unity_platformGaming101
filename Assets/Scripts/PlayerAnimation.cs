@@ -10,6 +10,7 @@ public class PlayerAnimation : MonoBehaviour
     public string[] jumpDirections = { "Jump_right", "Jump_left" };
     public string[] fallingDirections = { "Jump_Fall_right", "Jump_Fall_left" };
     public string[] damagedDirections = { "Damaged_right", "Damaged_left" };
+    public string[] deadDirections = { "Dead_right", "Dead_left" };
     public int lastDirection = 0;
     bool damaged = false;
 
@@ -64,6 +65,12 @@ public class PlayerAnimation : MonoBehaviour
             anim.Play(directionArray[lastDirection]);
             StartCoroutine(HandleDamageEffect()); // เรียก Coroutine สำหรับกระพริบ
         }
+    }
+        public void SetDeadDirection(Vector2 _direction)
+    {
+            string[] directionArray = deadDirections;
+            lastDirection = DirectionToIndex(_direction);
+            anim.Play(directionArray[lastDirection]);
     }
 
     // ฟังก์ชันสำหรับคำนวณทิศทาง (ซ้าย/ขวา)

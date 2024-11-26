@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class CameraFollow : MonoBehaviour
 {
+    public float offsetY =0;
 
     public Transform followTransform;
 
@@ -11,7 +11,7 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        this.transform.position = new Vector3(followTransform.position.x, followTransform.position.y, -10);
+        this.transform.position = new Vector3(followTransform.position.x, followTransform.position.y+offsetY, -10);
 
 
     }

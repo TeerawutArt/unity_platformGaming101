@@ -33,14 +33,7 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            OnDamaged();
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
 
-        }
         if (controlEnabled)
         {
             float inputX = Input.GetAxis("Horizontal");
@@ -139,25 +132,36 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public void OnDamaged()
+    public void TakeDamaged(int damage)
     {
         if (damaged) return;
-        pInfo.TakeDamage(1);
+        pInfo.TakeDamage(damage);
         damaged = true;
         controlEnabled = false;
+        if(pInfo.health>0){
         float knockbackDirection = pa.lastDirection == 0 ? -1 : 1;
         Vector2 knockback = new Vector2(knockbackDirection * knockBackPower, rb.velocity.y);
         rb.velocity = knockback;
         pa.SetDamageDirection(direction);
-        StartCoroutine(HandleDamageEffect());
+        StartCoroutine(HandleDamageEffect(1));
+        }else{
+            pa.SetDeadDirection(direction);
+            StartCoroutine(LoseGame(1));
+        }
+
     }
 
-    private IEnumerator HandleDamageEffect()
+    private IEnumerator HandleDamageEffect(float waitTime)
     {
         // รอให้กระพริบเสร็จสิ้น
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(waitTime);
         // หลังจากกระพริบเสร็จแล้ว เปิดการควบคุมกลับ
         controlEnabled = true;
         damaged = false;
+    }
+        private IEnumerator LoseGame(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        Debug.Log("LOSE"); //รอใส่พวก ui (restart,ออกเกม) ขอหาก่อน 
     }
 }

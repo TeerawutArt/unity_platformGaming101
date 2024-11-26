@@ -8,6 +8,8 @@ TagManager:
   - Collectable
   - coin
   - double_jump
+  - trigger
+  - powerUp
   layers:
   - Default
   - TransparentFX

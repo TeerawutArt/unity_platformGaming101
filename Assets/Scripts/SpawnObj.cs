@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class SpawnObj : MonoBehaviour
 {
-    public BoxCollider2D spawnArea;
+    public BoxCollider2D[] spawnCoinArea;
+    public BoxCollider2D[] spawnPowerArea;
+    public float minimumCoinOffset = 1.5f; // ระยะห่างขั้นต่ำระหว่างเหรียญ
     private int coinAmount;
     private int powerUpAmount;
-    private readonly int maxAttempts = 10;
+    private int randomIndex;
+    private BoxCollider2D selectedBox;
+    private List<Vector2> usedPositions = new List<Vector2>();
 
     void Start()
     {
+
         StartCoroutine(WaitForPoolAndSpawn());
     }
 
@@ -26,59 +31,78 @@ public class SpawnObj : MonoBehaviour
         SpawnItems();
     }
 
-    void SpawnItems()
+    public void SpawnItems()
     {
+        // Spawn coins
         for (int i = 0; i < coinAmount; i++)
         {
             GameObject coin = ObjectPooling.SharedInstance.GetPooledObject("coin");
             if (coin != null)
             {
-                RandomSpawnItem(coin);
+                Vector2 spawnPosition = GetValidSpawnPosition(spawnCoinArea, usedPositions);
+                if (spawnPosition != Vector2.zero)
+                {
+                    SpawnCoinPos(coin, spawnPosition);
+                }
             }
         }
         for (int i = 0; i < powerUpAmount; i++)
         {
             GameObject powerUp = ObjectPooling.SharedInstance.GetPooledObject("powerUp");
-            if (powerUp != null)
+            if (powerUp != null && i < spawnPowerArea.Length) 
             {
-                RandomSpawnItem(powerUp);
+                SpawnPowerUpPos(powerUp, spawnPowerArea[i].transform.position);
             }
         }
     }
 
-    public void RandomSpawnItem(GameObject _gameObject)
+    private Vector2 GetValidSpawnPosition(BoxCollider2D[] spawnAreas, List<Vector2> usedPositions)
     {
-        Vector2 spawnPosition;
-        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        // พยายามสุ่มตำแหน่งใหม่ในพื้นที่ที่เลือก
+        for (int attempt = 0; attempt < 10; attempt++) // ลองสุ่มไม่เกิน 10 ครั้ง
         {
-            spawnPosition = RandomPos();
-            //check pos ที่จะเกิดดูก่อน (ใช่ถ้าวนลูปครบแล้วมันยังทับกันอยู่ ก็ช่างมันละวู้)
-            if (IsPositionFree(spawnPosition, 0.5f))
+            randomIndex = Random.Range(0, spawnAreas.Length);
+            selectedBox = spawnAreas[randomIndex];
+            Vector2 randomPosition = GetRandomPositionInBox(selectedBox);
+
+            // ตรวจสอบว่าตำแหน่งในแกน x ไม่ใกล้กับตำแหน่งที่ใช้ไปแล้ว
+            bool isValid = true;
+            foreach (Vector2 usedPosition in usedPositions)
             {
-                _gameObject.transform.position = spawnPosition;
-                _gameObject.SetActive(true);
-                return;
+                if (Mathf.Abs(randomPosition.x - usedPosition.x) < minimumCoinOffset) // เช็คเฉพาะแกน x
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid)
+            {
+                usedPositions.Add(randomPosition); // บันทึกตำแหน่งที่ใช้
+                return randomPosition;
             }
         }
+
+        // ถ้าหาตำแหน่งที่เหมาะสมไม่ได้ ให้คืนค่า Vector2.zero
+        return Vector2.zero;
     }
 
-    public Vector2 RandomPos()
+    private Vector2 GetRandomPositionInBox(BoxCollider2D box)
     {
-        float randomX = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
-        float randomY = Random.Range(spawnArea.bounds.min.y, spawnArea.bounds.max.y);
+        float randomX = Random.Range(box.bounds.min.x, box.bounds.max.x); //สุ่มในขอบเขตทั้งหมดของ box
+        float randomY = Random.Range(box.bounds.min.y, box.bounds.max.y);
         return new Vector2(randomX, randomY);
     }
 
-    public bool IsPositionFree(Vector2 pos, float size)
+    public void SpawnCoinPos(GameObject _gameObject, Vector2 spawnPosition)
     {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(pos, new Vector2(size, size), 0);
-        foreach (var collider in colliders)
-        {
-            if (collider.CompareTag("Ground") || collider.CompareTag("coin"))
-            {
-                return false;
-            }
-        }
-        return true;
+        _gameObject.transform.position = spawnPosition;
+        _gameObject.SetActive(true);
+    }
+
+    public void SpawnPowerUpPos(GameObject _gameObject, Vector2 spawnPosition)
+    {
+        _gameObject.transform.position = spawnPosition;
+        _gameObject.SetActive(true);
     }
 }
