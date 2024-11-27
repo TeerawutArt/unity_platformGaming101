@@ -25,8 +25,10 @@ public class CollectableItems : MonoBehaviour
             //เหรียญ
             if (gameObject.CompareTag("coin"))
             {
+                ItemController coin = gameObject.GetComponent<ItemController>();
                 player.OnCollectingItem("coin");
                 gameObject.SetActive(false);
+                op.ResetObject(gameObject,"coin",coin);
 
             }
             //power up double jump
@@ -35,7 +37,7 @@ public class CollectableItems : MonoBehaviour
                 ItemController doubleJump = gameObject.GetComponent<ItemController>();
                 player.OnCollectingItem("double jump");
                 gameObject.SetActive(false);
-                op.ResetObject(gameObject,"powerUp",doubleJump.index);
+                op.ResetObject(gameObject,"powerUp",doubleJump);
 
             }
         }

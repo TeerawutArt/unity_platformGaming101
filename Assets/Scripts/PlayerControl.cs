@@ -19,9 +19,11 @@ public class PlayerControl : MonoBehaviour
     private Vector2 direction = Vector2.zero;
     private PlayerAnimation pa;
     private bool damaged = false;
+    private UIController ui;
 
     void Start()
     {
+        ui = UIController.SharedInstance;
         se = SoundEffect.ShareInstance;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -162,6 +164,7 @@ public class PlayerControl : MonoBehaviour
         private IEnumerator LoseGame(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        Debug.Log("LOSE"); //รอใส่พวก ui (restart,ออกเกม) ขอหาก่อน 
+        ui.OnPauseGame();
+        
     }
 }

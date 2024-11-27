@@ -11,7 +11,7 @@ public class SpawnObj : MonoBehaviour
     private int powerUpAmount;
     private int randomIndex;
     private BoxCollider2D selectedBox;
-    private List<Vector2> usedPositions = new List<Vector2>();
+    public List<Vector2> usedPositions = new List<Vector2>();
 
     void Start()
     {
@@ -56,7 +56,9 @@ public class SpawnObj : MonoBehaviour
         }
     }
 
-    private Vector2 GetValidSpawnPosition(BoxCollider2D[] spawnAreas, List<Vector2> usedPositions)
+
+
+    public Vector2 GetValidSpawnPosition(BoxCollider2D[] spawnAreas, List<Vector2> usedPositions)
     {
         // พยายามสุ่มตำแหน่งใหม่ในพื้นที่ที่เลือก
         for (int attempt = 0; attempt < 10; attempt++) // ลองสุ่มไม่เกิน 10 ครั้ง
@@ -84,7 +86,7 @@ public class SpawnObj : MonoBehaviour
         }
 
         // ถ้าหาตำแหน่งที่เหมาะสมไม่ได้ ให้คืนค่า Vector2.zero
-        return Vector2.zero;
+      return Vector2.zero; 
     }
 
     private Vector2 GetRandomPositionInBox(BoxCollider2D box)
@@ -94,15 +96,17 @@ public class SpawnObj : MonoBehaviour
         return new Vector2(randomX, randomY);
     }
 
-    public void SpawnCoinPos(GameObject _gameObject, Vector2 spawnPosition)
+    public void SpawnCoinPos(GameObject _gameObject, Vector2 _spawnPosition)
     {
-        _gameObject.transform.position = spawnPosition;
-        _gameObject.SetActive(true);
+    _gameObject.SetActive(true); // เปิดใช้งาน GameObject
+    _gameObject.transform.position = _spawnPosition; // ตั้งค่าตำแหน่งใหม่
+  
     }
 
-    public void SpawnPowerUpPos(GameObject _gameObject, Vector2 spawnPosition)
+    public void SpawnPowerUpPos(GameObject _gameObject, Vector2 _spawnPosition)
     {
-        _gameObject.transform.position = spawnPosition;
+
+        _gameObject.transform.position = _spawnPosition;
         _gameObject.SetActive(true);
     }
 }

@@ -27,6 +27,7 @@ public class ObjectPooling : MonoBehaviour
         InitializePool("coin", coinPrefab, coinAmountToPool);
         InitializePool("powerUp", powerUpPrefab, powerUpAmountToPool);
         isInitialized = true;
+
     }
 
 
@@ -60,29 +61,32 @@ public class ObjectPooling : MonoBehaviour
     }
 
     //ส่วนของ respawn collect ต่างๆ (ตอนนี้เหรียญไม่ได้ให้เกิดใหม่)
-    public void ResetObject(GameObject obj, string key, int spawnIndex)
+    public void ResetObject(GameObject obj, string key, ItemController item)
     {
-        StartCoroutine(WaitAndReactivateObject(obj, key, spawnIndex));
+        StartCoroutine(WaitAndReactivateObject(obj, key, item));
     }
 
-    private IEnumerator WaitAndReactivateObject(GameObject obj, string key, int spawnIndex)
+    private IEnumerator WaitAndReactivateObject(GameObject _obj, string _key, ItemController _item)
     {
         yield return new WaitForSeconds(3);
 
-        if (key == "coin")
+        if (_key == "coin")
         {
-            if (spawnIndex >= 0 && spawnIndex < sc.spawnCoinArea.Length)
+            if (_item.index >= 0)
             {
-                Vector3 spawnPosition = sc.spawnCoinArea[spawnIndex].transform.position;
-                sc.SpawnCoinPos(obj, spawnPosition); // ส่งตำแหน่งให้ SpawnCoinPos
+                //สุ่มเกิดที่อื่น
+                Vector2 spawnPosition = sc.GetValidSpawnPosition(sc.spawnCoinArea,sc.usedPositions);
+                _item.startPosition =spawnPosition;//อย่าลืมไปเปลี่ยนจุดนี้ด้วย (งมตั้งนาน)
+                sc.SpawnCoinPos(_obj, spawnPosition); // ส่งตำแหน่งให้ SpawnCoinPos
             }
         }
-        else if (key == "powerUp")
+        else if (_key == "powerUp")
         {
-            if (spawnIndex >= 0 && spawnIndex < sc.spawnPowerArea.Length)
+            if (_item.index >= 0 && _item.index < sc.spawnPowerArea.Length)
             {
-                Vector3 spawnPosition = sc.spawnPowerArea[spawnIndex].transform.position;
-                sc.SpawnPowerUpPos(obj, spawnPosition); // ส่งตำแหน่งให้ SpawnPowerUpPos
+                //powerUp จะไม่มีการสุ่มตำแหน่งใหม่ เกิดจุดเดิมที่เก็บ
+                Vector2 spawnPosition = sc.spawnPowerArea[_item.index].transform.position;
+                sc.SpawnPowerUpPos(_obj, spawnPosition); // ส่งตำแหน่งให้ SpawnPowerUpPos
             }
         }
     }
