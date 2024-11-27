@@ -1280,7 +1280,7 @@ MonoBehaviour:
   jump: {fileID: 8300000, guid: de58e70644fc09941babe4264b3a3b8e, type: 3}
   jumpOnGround: {fileID: 8300000, guid: 682a4570f3e8a664faa8eba0a79c3291, type: 3}
   bgMusic: {fileID: 8300000, guid: 5cb60a5fecbb4f1408ef6ca4e020f692, type: 3}
-  soundVolumeBg: 0.3
+  soundVolumeBg: 0.2
 --- !u!1 &541421384
 GameObject:
   m_ObjectHideFlags: 0

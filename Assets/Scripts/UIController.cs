@@ -12,12 +12,15 @@ public class UIController : MonoBehaviour
     public static UIController SharedInstance;
     private bool isPaused = false;
     public bool newGame = false;
+
     // Start is called before the first frame update
     void Awake()
     {
         SharedInstance = this;
 
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -32,6 +35,8 @@ public class UIController : MonoBehaviour
         PowerUp.enabled = state;
     }
         public void OnPauseGame(){
+
+            
             if(!isPaused){
                 Time.timeScale = 0f;
                 PauseGame.SetActive(true);
@@ -40,6 +45,7 @@ public class UIController : MonoBehaviour
                 PauseGame.SetActive(false);
             }
             isPaused = !isPaused;
+
 
     }
 }

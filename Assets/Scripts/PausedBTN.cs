@@ -9,12 +9,19 @@ public class PausedBTN : MonoBehaviour
     private Button restartButton;
     private Button quitButton;
     private UIController ui;
+    public static PausedBTN SharedInstance;
+    
 
+void Awake()
+{
+    SharedInstance = this;
+    
+}
     void Start()
     {
         ui = UIController.SharedInstance;
 
-        Button[] buttons = GetComponentsInChildren<Button>();
+        Button[]  buttons = GetComponentsInChildren<Button>();
 
         foreach (Button button in buttons)
         {
@@ -45,6 +52,7 @@ public class PausedBTN : MonoBehaviour
     {
         ui.OnPauseGame();
     }
+
     private void OnRestartButtonClick()
     {
         Time.timeScale = 1f;
