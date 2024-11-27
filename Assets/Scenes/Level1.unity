@@ -675,7 +675,6 @@ MonoBehaviour:
   - {fileID: 230852139}
   - {fileID: 708954326}
   - {fileID: 758264910}
-  - {fileID: 1423632563}
   minimumCoinOffset: 0.5
   usedPositions: []
 --- !u!114 &431004226
@@ -738,6 +737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PauseGame: {fileID: 1484549516}
   PowerUp: {fileID: 2140707208}
+  newGame: 0
 --- !u!114 &431004231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1873,6 +1873,14 @@ PrefabInstance:
     - target: {fileID: 546289079522796674, guid: d911d32f2e6d57d45b5e0dbfdf94ea98, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1561081812608838612, guid: d911d32f2e6d57d45b5e0dbfdf94ea98, type: 3}
+      propertyPath: m_Size.x
+      value: 0.031235337
+      objectReference: {fileID: 0}
+    - target: {fileID: 1561081812608838612, guid: d911d32f2e6d57d45b5e0dbfdf94ea98, type: 3}
+      propertyPath: m_Offset.x
+      value: 1.2326381
       objectReference: {fileID: 0}
     - target: {fileID: 2578147989877817389, guid: d911d32f2e6d57d45b5e0dbfdf94ea98, type: 3}
       propertyPath: m_Name

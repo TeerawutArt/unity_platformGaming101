@@ -74,11 +74,11 @@ public class PlayerControl : MonoBehaviour
 
 
             //check state ของตัวละคร
-            if (rb.velocity.y > 0.1f) // ตัวละครกำลังกระโดดขึ้น
+            if (rb.velocity.y > 0.2f) // ตัวละครกำลังกระโดดขึ้น
             {
                 jumpState = JumpState.Jumping;
             }
-            else if (rb.velocity.y < -0.1f) // ตัวละครกำลังตกลง
+            else if (rb.velocity.y < -0.2f) // ตัวละครกำลังตกลง
             {
                 if (jumpState != JumpState.Falling) // เริ่มบันทึกระยะการตก
                 {
@@ -113,8 +113,8 @@ public class PlayerControl : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            // เช็คว่าระยะตกลงมามีอย่างน้อย 0.01 หน่วย (แก้บัคสะดุด platform)
-            if (jumpState == JumpState.Falling && Mathf.Abs(transform.position.y - fallStartY) >= 0.01f)
+            // เช็คว่าระยะตกลงมามีอย่างน้อย 0.02 หน่วย (แก้บัคสะดุด platform)
+            if (jumpState == JumpState.Falling && Mathf.Abs(transform.position.y - fallStartY) >= 0.02f)
             {
                 se.PlaySoundEffect("jumpOnGround");
             }
@@ -164,6 +164,7 @@ public class PlayerControl : MonoBehaviour
         private IEnumerator LoseGame(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+        ui.newGame = true;
         ui.OnPauseGame();
         
     }

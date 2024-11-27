@@ -21,7 +21,12 @@ public class PausedBTN : MonoBehaviour
             if (button.name == "Play")
             {
                 playButton = button;
+
+                if(ui.newGame){
+                playButton.onClick.AddListener(OnRestartButtonClick);
+                }else{
                 playButton.onClick.AddListener(OnPlayButtonClick);
+                }
             }
             else if (button.name == "Restart")
             {
@@ -43,13 +48,14 @@ public class PausedBTN : MonoBehaviour
     private void OnRestartButtonClick()
     {
         Time.timeScale = 1f;
+        ui.newGame = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 
     private void OnQuitButtonClick()
     {
-
+        ui.newGame = false;
         Application.Quit();
         //ใน editor มันออกเกมจริงๆไม่ได้
         Time.timeScale = 0f;

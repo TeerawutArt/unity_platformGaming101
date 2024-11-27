@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     public UnityEngine.UI.Image PowerUp;
     public static UIController SharedInstance;
     private bool isPaused = false;
+    public bool newGame = false;
     // Start is called before the first frame update
     void Awake()
     {
